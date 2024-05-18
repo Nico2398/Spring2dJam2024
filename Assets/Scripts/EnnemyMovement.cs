@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class EnnemyMovement : MonoBehaviour
 {
-    [SerializeField] float movementForce = 10f;
+    [SerializeField] float movementSpeed = 10f;
     [SerializeField] float areaWidth = 5f;
 
     Rigidbody2D rb;
@@ -29,6 +29,8 @@ public class EnnemyMovement : MonoBehaviour
         else if (transform.position.x < minX)
             direction = 1f;
 
-        rb.AddForce(Vector2.right * direction * movementForce);
+        Vector2 velocity = rb.velocity;
+        velocity.x = direction * movementSpeed;
+        rb.velocity = velocity;
     }
 }

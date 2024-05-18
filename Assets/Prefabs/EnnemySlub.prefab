@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 067900ce6630f5f4ca29f27f4d59072c, type: 2}
     - target: {fileID: 5624425381685581031, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
       propertyPath: m_Name
-      value: Ennemy Variant
+      value: EnnemySlub
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -81,5 +81,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecb289c21b9ec2245a1eaec65bc6e9ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementForce: 10
+  movementSpeed: 4
   areaWidth: 5

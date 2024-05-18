@@ -13,7 +13,7 @@ public class EnnemyProjectile : MonoBehaviour
         col = GetComponent<CircleCollider2D>();
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
@@ -22,7 +22,16 @@ public class EnnemyProjectile : MonoBehaviour
             {
                 controller.ReceiveDamages(transform.position, knockbackFactor);
             }
+            DestroyProjectile();
         }
+        else if (collision.gameObject.CompareTag("GroundOrWall"))
+        {
+            DestroyProjectile();
+        }
+    }
+
+    private void DestroyProjectile()
+    {
         col.enabled = false;
         GameObject.Destroy(gameObject, 0f);
     }
