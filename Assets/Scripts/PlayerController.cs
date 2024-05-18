@@ -12,10 +12,14 @@ public class PlayerController : MonoBehaviour
     // Fields
     [SerializeField] float movementSpeed = 10f;
     [SerializeField] float jumpVelocity = 20f;
+    [SerializeField] float knockbackVelocity = 20f;
+    [SerializeField] float knockbackMaximumVerticalVelocity = 10f;
     [SerializeField][Range(0.95f, 1f)] float movementLagGround = 0.995f;
     [SerializeField][Range(0.95f, 1f)] float movementLagAir = 0.999f;
     [SerializeField][Range(0f, 1f)] float gravityReductionOnJump = .25f;
     [SerializeField][Range(0f, 1f)] float gravityAugmentOnDown = .25f;
+    [SerializeField] int defaultHealth = 3;
+    [SerializeField][Range(0f, 3f)] float invincibilityDuration = 1f;
 
     // Player inputs
     float movement = 0f;
@@ -29,11 +33,14 @@ public class PlayerController : MonoBehaviour
     // Gameplay
     bool isOnGround = false;
     float initialGravityScale = 1f;
+    int health = 1;
+    float invincibilityCooldown = 0f;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         initialGravityScale = rb.gravityScale;
+        health = defaultHealth;
     }
 
     void FixedUpdate()
@@ -43,6 +50,7 @@ public class PlayerController : MonoBehaviour
         float gravityFactor = holdingJump ? 1f - gravityReductionOnJump : down ? 1f + gravityAugmentOnDown : 1f;
         rb.gravityScale = initialGravityScale * gravityFactor;
 
+        invincibilityCooldown = Mathf.Max(invincibilityCooldown - Time.fixedDeltaTime, 0f);
         isOnGround = false;
     }
 
@@ -65,7 +73,6 @@ public class PlayerController : MonoBehaviour
             pendingJump = false;
         }
 
-        Debug.Log("Velocity: " + rb.velocity + " -> " + velocity);
         rb.velocity = velocity;
     }
 
@@ -111,5 +118,18 @@ public class PlayerController : MonoBehaviour
         {
             isOnGround = true;
         }
+    }
+
+    public void ReceiveDamages(Vector3 damageSourcePosition, float knockbackFactor)
+    {
+        if (invincibilityCooldown > 0f)
+            return;
+        health -= 1;
+        Debug.Log("lifes: " + health);
+        invincibilityCooldown = invincibilityDuration;
+        Vector2 knockbackDirection = transform.position - damageSourcePosition;
+        Vector2 knockback = knockbackDirection.normalized * knockbackVelocity * knockbackFactor;
+        knockback.y = Mathf.Min(knockbackMaximumVerticalVelocity, knockback.y);
+        rb.velocity = knockback;
     }
 }
