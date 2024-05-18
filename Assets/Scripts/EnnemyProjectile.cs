@@ -6,11 +6,19 @@ using UnityEngine;
 public class EnnemyProjectile : MonoBehaviour
 {
     public float knockbackFactor = .5f;
+    public float duration = 10f;
     private CircleCollider2D col;
 
     private void Awake()
     {
         col = GetComponent<CircleCollider2D>();
+    }
+
+    private void FixedUpdate()
+    {
+        duration -= Time.deltaTime;
+        if (duration <= 0f)
+            DestroyProjectile();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
