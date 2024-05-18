@@ -9,10 +9,12 @@ public class EnnemyHealth : MonoBehaviour
 
     int health = 3;
     Rigidbody2D rb;
+    Vector3 initialPosition;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        initialPosition = transform.position;
         Init();
     }
 
@@ -28,6 +30,9 @@ public class EnnemyHealth : MonoBehaviour
     public void Init()
     {
         health = defaultHealth;
+        transform.position = initialPosition;
+        if (rb != null)
+            rb.velocity = Vector2.zero;
         gameObject.SetActive(true);
     }
 }
