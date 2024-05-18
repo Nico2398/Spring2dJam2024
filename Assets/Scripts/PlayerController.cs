@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField][Range(0.95f, 1f)] float movementLagGround = 0.995f;
     [SerializeField][Range(0.95f, 1f)] float movementLagAir = 0.999f;
     [SerializeField][Range(0f, 1f)] float gravityReductionOnJump = .25f;
+    [SerializeField][Range(0f, 1f)] float gravityReductionOnPushingWall = .8f;
     [SerializeField][Range(0f, 1f)] float gravityAugmentOnDown = .25f;
     [SerializeField] int defaultHealth = 3;
     [SerializeField][Range(0f, 3f)] float invincibilityDuration = 1f;
@@ -35,6 +36,8 @@ public class PlayerController : MonoBehaviour
     float initialGravityScale = 1f;
     int health = 1;
     float invincibilityCooldown = 0f;
+    bool isPushingWallLeft = false;
+    bool isPushingWallRight = false;
 
     void Awake()
     {
@@ -45,13 +48,23 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        Debug.Log("" + isPushingWallLeft + isPushingWallRight);
         UpdateVelocity(Time.fixedDeltaTime);
 
-        float gravityFactor = holdingJump ? 1f - gravityReductionOnJump : down ? 1f + gravityAugmentOnDown : 1f;
+        bool isPushingWall = isPushingWallLeft || isPushingWallRight;
+        float gravityFactor =
+            isPushingWall ? 1 - gravityReductionOnPushingWall : 
+            holdingJump ? 1f - gravityReductionOnJump : 
+            down ? 1f + gravityAugmentOnDown :
+                1f;
         rb.gravityScale = initialGravityScale * gravityFactor;
 
         invincibilityCooldown = Mathf.Max(invincibilityCooldown - Time.fixedDeltaTime, 0f);
-        isOnGround = false;
+
+        if (rb.velocity.magnitude > .0001f)
+            isOnGround = false;
+        isPushingWallLeft = false;
+        isPushingWallRight = false;
     }
 
     private void UpdateVelocity(float deltaTime)
@@ -71,6 +84,11 @@ public class PlayerController : MonoBehaviour
         {
             velocity.y = jumpVelocity;
             pendingJump = false;
+
+            if (isPushingWallRight)
+                velocity.x = -movementSpeed;
+            else if (isPushingWallLeft)
+                velocity.x = movementSpeed;
         }
 
         rb.velocity = velocity;
@@ -114,9 +132,18 @@ public class PlayerController : MonoBehaviour
         // Note that OnCollisionXX is called once per FixedUpdate per collider (called after FixedUpdate).
         // See https://docs.unity3d.com/Manual/ExecutionOrder.html
 
-        if (collision.gameObject.CompareTag("GroundOrWall"))
+        if (collision.gameObject.CompareTag("GroundOrWall") && rb.velocity.y <= 0.001)
         {
             isOnGround = true;
+            float colNormalX = collision.GetContact(0).normal.x;
+            // if collision pushes player horizontally and is opposite to player direction
+            if (Mathf.Abs(colNormalX) > .5f && movement * colNormalX < 0)
+            {
+                if (movement > 0)
+                    isPushingWallRight = true;
+                else if (movement < 0)
+                    isPushingWallLeft = true;
+            }
         }
     }
 
