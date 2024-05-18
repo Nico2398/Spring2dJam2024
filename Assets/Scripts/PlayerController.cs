@@ -38,6 +38,9 @@ public class PlayerController : MonoBehaviour
     float invincibilityCooldown = 0f;
     bool isPushingWallLeft = false;
     bool isPushingWallRight = false;
+    bool isSunbathAvailable = false;
+    Platform platform = null;
+    int maxHealth = 1;
 
     private bool isPushingWall => isPushingWallRight || isPushingWallLeft;
 
@@ -45,26 +48,32 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         initialGravityScale = rb.gravityScale;
+        maxHealth = defaultHealth;
         health = defaultHealth;
     }
 
     void FixedUpdate()
     {
         UpdateVelocity(Time.fixedDeltaTime);
-
-        float gravityFactor =
-            isPushingWall ? 1 - gravityReductionOnPushingWall : 
-            holdingJump ? 1f - gravityReductionOnJump : 
-            down ? 1f + gravityAugmentOnDown :
-                1f;
-        rb.gravityScale = initialGravityScale * gravityFactor;
+        UpdateGravity();
+        UpdateActions();
 
         invincibilityCooldown = Mathf.Max(invincibilityCooldown - Time.fixedDeltaTime, 0f);
-
         if (rb.velocity.magnitude != 0f)
             isOnGround = false;
         isPushingWallLeft = false;
         isPushingWallRight = false;
+
+    }
+
+    private void UpdateGravity()
+    {
+        float gravityFactor =
+            isPushingWall ? 1 - gravityReductionOnPushingWall :
+            holdingJump ? 1f - gravityReductionOnJump :
+            down ? 1f + gravityAugmentOnDown :
+                1f;
+        rb.gravityScale = initialGravityScale * gravityFactor;
     }
 
     private void UpdateVelocity(float deltaTime)
@@ -94,6 +103,33 @@ public class PlayerController : MonoBehaviour
         }
 
         rb.velocity = velocity;
+    }
+
+    private void UpdateActions()
+    {
+        if (sunbath && isSunbathAvailable)
+        {
+            TakeSunbath();
+        }
+
+        if (down && platform != null)
+        {
+            GoDown();
+        }
+    }
+
+    private void TakeSunbath()
+    {
+        health = maxHealth;
+    }
+
+    private void GoDown()
+    {
+        if (down && platform != null)
+        {
+            platform.SetEnabledPlatform(false);
+            platform = null;
+        }
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -162,5 +198,16 @@ public class PlayerController : MonoBehaviour
         Vector2 knockback = knockbackDirection.normalized * knockbackVelocity * knockbackFactor;
         knockback.y = Mathf.Min(knockbackMaximumVerticalVelocity, knockback.y);
         rb.velocity = knockback;
+    }
+
+    public void SetSunbathAvailable(bool isAvailable)
+    {
+        isSunbathAvailable = isAvailable;
+    }
+
+    public void SetPlatform(Platform p)
+    {
+        Debug.Log("SetPlaform: " + p);
+        platform = p;
     }
 }
