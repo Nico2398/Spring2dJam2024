@@ -39,6 +39,8 @@ public class PlayerController : MonoBehaviour
     bool isPushingWallLeft = false;
     bool isPushingWallRight = false;
 
+    private bool isPushingWall => isPushingWallRight || isPushingWallLeft;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -48,10 +50,8 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        Debug.Log("" + isPushingWallLeft + isPushingWallRight);
         UpdateVelocity(Time.fixedDeltaTime);
 
-        bool isPushingWall = isPushingWallLeft || isPushingWallRight;
         float gravityFactor =
             isPushingWall ? 1 - gravityReductionOnPushingWall : 
             holdingJump ? 1f - gravityReductionOnJump : 
@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour
 
         invincibilityCooldown = Mathf.Max(invincibilityCooldown - Time.fixedDeltaTime, 0f);
 
-        if (rb.velocity.magnitude > .0001f)
+        if (rb.velocity.magnitude != 0f)
             isOnGround = false;
         isPushingWallLeft = false;
         isPushingWallRight = false;
@@ -80,14 +80,16 @@ public class PlayerController : MonoBehaviour
         float b = r * (1 - a);
 
         velocity.x = a * velocity.x + b;
-        if (isOnGround && pendingJump)
+        if (pendingJump)
         {
-            velocity.y = jumpVelocity;
             pendingJump = false;
 
-            if (isPushingWallRight)
+            if (isOnGround || isPushingWall)
+                velocity.y = jumpVelocity;
+
+            if (isPushingWallRight && !isOnGround)
                 velocity.x = -movementSpeed;
-            else if (isPushingWallLeft)
+            else if (isPushingWallLeft && !isOnGround)
                 velocity.x = movementSpeed;
         }
 
@@ -101,7 +103,7 @@ public class PlayerController : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-        if (context.phase == InputActionPhase.Started && isOnGround)
+        if (context.phase == InputActionPhase.Started && (isOnGround || isPushingWall))
             pendingJump = true;
 
         holdingJump = context.ReadValue<float>() > 0f;
@@ -134,15 +136,17 @@ public class PlayerController : MonoBehaviour
 
         if (collision.gameObject.CompareTag("GroundOrWall") && rb.velocity.y <= 0.001)
         {
-            isOnGround = true;
-            float colNormalX = collision.GetContact(0).normal.x;
-            // if collision pushes player horizontally and is opposite to player direction
-            if (Mathf.Abs(colNormalX) > .5f && movement * colNormalX < 0)
+            Vector2 normal = collision.GetContact(0).normal;
+            if (Mathf.Abs(normal.x) > .5f)
             {
-                if (movement > 0)
+                if (normal.x < 0)
                     isPushingWallRight = true;
-                else if (movement < 0)
+                else if (normal.x > 0)
                     isPushingWallLeft = true;
+            }
+            else if (normal.y > .5f)
+            {
+                isOnGround = true;
             }
         }
     }
