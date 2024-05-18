@@ -1,0 +1,115 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+[RequireComponent(typeof(Rigidbody2D))]
+public class PlayerController : MonoBehaviour
+{
+    // Components
+    Rigidbody2D rb;
+
+    // Fields
+    [SerializeField] float movementSpeed = 10f;
+    [SerializeField] float jumpVelocity = 20f;
+    [SerializeField][Range(0.95f, 1f)] float movementLagGround = 0.995f;
+    [SerializeField][Range(0.95f, 1f)] float movementLagAir = 0.999f;
+    [SerializeField][Range(0f, 1f)] float gravityReductionOnJump = .25f;
+    [SerializeField][Range(0f, 1f)] float gravityAugmentOnDown = .25f;
+
+    // Player inputs
+    float movement = 0f;
+    bool holdingJump = false;
+    bool pendingJump = false;
+    bool sunbath = false;
+    bool down = false;
+    bool punch = false;
+    bool fire = false;
+
+    // Gameplay
+    bool isOnGround = false;
+    float initialGravityScale = 1f;
+
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        initialGravityScale = rb.gravityScale;
+    }
+
+    void FixedUpdate()
+    {
+        UpdateVelocity(Time.fixedDeltaTime);
+
+        float gravityFactor = holdingJump ? 1f - gravityReductionOnJump : down ? 1f + gravityAugmentOnDown : 1f;
+        rb.gravityScale = initialGravityScale * gravityFactor;
+
+        isOnGround = false;
+    }
+
+    private void UpdateVelocity(float deltaTime)
+    {
+        float movementLag = isOnGround ? movementLagGround : movementLagAir;
+
+        // Horizontal velocity follows an arithmetico-geometric sequence formula Un+1 = a*Un+b, which converges towards r
+        // See more here (explainations in french): https://www.desmos.com/calculator/4gbjauqhf7
+        Vector2 velocity = rb.velocity;
+
+        float r = movement * movementSpeed;
+        float a = Mathf.Pow(movementLag, 1f / deltaTime);
+        float b = r * (1 - a);
+
+        velocity.x = a * velocity.x + b;
+        if (isOnGround && pendingJump)
+        {
+            velocity.y = jumpVelocity;
+            pendingJump = false;
+        }
+
+        Debug.Log("Velocity: " + rb.velocity + " -> " + velocity);
+        rb.velocity = velocity;
+    }
+
+    public void Move(InputAction.CallbackContext context)
+    {
+        movement = context.ReadValue<float>();
+    }
+
+    public void Jump(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started && isOnGround)
+            pendingJump = true;
+
+        holdingJump = context.ReadValue<float>() > 0f;
+    }
+
+    public void Sunbath(InputAction.CallbackContext context)
+    {
+        sunbath = context.ReadValue<float>() > 0f;
+    }
+
+    public void Down(InputAction.CallbackContext context)
+    {
+        down = context.ReadValue<float>() > 0f;
+    }
+
+    public void Punch(InputAction.CallbackContext context)
+    {
+        punch = context.ReadValue<float>() > 0f;
+    }
+
+    public void Fire(InputAction.CallbackContext context)
+    {
+        fire = context.ReadValue<float>() > 0f;
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        // Note that OnCollisionXX is called once per FixedUpdate per collider (called after FixedUpdate).
+        // See https://docs.unity3d.com/Manual/ExecutionOrder.html
+
+        if (collision.gameObject.CompareTag("GroundOrWall"))
+        {
+            isOnGround = true;
+        }
+    }
+}
