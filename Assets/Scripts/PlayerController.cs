@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int defaultHealth = 3;
     [SerializeField][Range(0f, 3f)] float invincibilityDuration = 1f;
     [SerializeField] PlayerPunch playerPunch;
+    [SerializeField] Animator animator;
 
     // Player inputs
     float movement = 0f;
@@ -44,6 +45,8 @@ public class PlayerController : MonoBehaviour
     int maxHealth = 1;
     Vector3 respawnLocation = Vector3.zero;
     bool isPunchUnlocked = false;
+    Vector3 initalScale = Vector3.zero;
+    float direction = 1f;
 
     private bool isPushingWall => isPushingWallRight || isPushingWallLeft;
 
@@ -54,6 +57,16 @@ public class PlayerController : MonoBehaviour
         maxHealth = defaultHealth;
         health = defaultHealth;
         respawnLocation = transform.position;
+        initalScale = transform.localScale;
+    }
+
+    private void Update()
+    {
+        animator.SetBool("Jump", !isOnGround);
+        animator.SetBool("Wall", isPushingWall);
+        animator.SetBool("Run", Mathf.Abs(rb.velocity.x) > .05);
+        animator.SetBool("Sunbath", sunbath && isOnGround && Mathf.Abs(rb.velocity.x) < .05);
+        transform.localScale = Vector3.Scale(initalScale, new Vector3(direction, 1, 1));
     }
 
     void FixedUpdate()
@@ -71,6 +84,10 @@ public class PlayerController : MonoBehaviour
         isPushingWallLeft = false;
         isPushingWallRight = false;
 
+        if (rb.velocity.x > 0f)
+            direction = 1f;
+        else if (rb.velocity.x < 0f)
+            direction = -1f;
     }
 
     private void UpdateGravity()
