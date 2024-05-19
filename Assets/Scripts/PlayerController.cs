@@ -210,4 +210,9 @@ public class PlayerController : MonoBehaviour
         Debug.Log("SetPlaform: " + p);
         platform = p;
     }
+
+    public void PowerUp()
+    {
+        maxHealth += 1;
+    }
 }

@@ -130,17 +130,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1443371998583923311, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -327220701, guid: d0b0558fe361d5d45a60ba6da31d48c4, type: 3}
     - target: {fileID: 1537375780532801556, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.13
+      value: 61.868332
       objectReference: {fileID: 0}
     - target: {fileID: 1537375780532801556, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.81
+      value: 12.002326
       objectReference: {fileID: 0}
     - target: {fileID: 1537375780532801556, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 1537375780532801556, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
       propertyPath: m_LocalRotation.w
@@ -186,7 +190,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnnemyRoundup
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7252643826738384561, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
+      propertyPath: m_Size.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7252643826738384561, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
+      propertyPath: m_Offset.y
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: -8276503954121859479, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1537375780532801556, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
@@ -199,6 +212,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5624425381685581031, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2118551300024947838}
+    - targetCorrespondingSourceObject: {fileID: 5624425381685581031, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9030573144772172234}
   m_SourcePrefab: {fileID: 100100000, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
 --- !u!4 &4053289608585222109 stripped
 Transform:
@@ -226,3 +242,24 @@ MonoBehaviour:
   projectileSpeed: 7
   projectilePrefab: {fileID: 1264949854567444470, guid: 71f98e8aeddf3e7498f0e454c42d1f70, type: 3}
   firePosition: {fileID: 8483500960785384358}
+--- !u!95 &9030573144772172234
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7140474084969419566}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a3751c8a18d69af4da5aebb45cf9a5fa, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

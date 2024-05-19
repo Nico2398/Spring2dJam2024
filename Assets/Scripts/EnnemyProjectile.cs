@@ -14,6 +14,13 @@ public class EnnemyProjectile : MonoBehaviour
         col = GetComponent<CircleCollider2D>();
     }
 
+    private void Start()
+    {
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null && rb.velocity.x > 0)
+            transform.localScale = new Vector3(-1, 1, 1);
+    }
+
     private void FixedUpdate()
     {
         duration -= Time.deltaTime;

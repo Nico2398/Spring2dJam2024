@@ -13,12 +13,14 @@ public class EnnemyMovement : MonoBehaviour
 
     float maxX = 0f;
     float minX = 0f;
+    Vector3 initialScale = Vector3.zero;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         maxX = transform.position.x + areaWidth / 2;
         minX = transform.position.x - areaWidth / 2;
+        initialScale = transform.localScale;
     }
 
     // Update is called once per frame
@@ -29,6 +31,7 @@ public class EnnemyMovement : MonoBehaviour
         else if (transform.position.x < minX)
             direction = 1f;
 
+        transform.localScale = Vector3.Scale(initialScale, new Vector3(-direction, 1, 1));
         Vector2 velocity = rb.velocity;
         velocity.x = direction * movementSpeed;
         rb.velocity = velocity;
