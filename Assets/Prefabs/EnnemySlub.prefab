@@ -8,13 +8,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1443371998583923311, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -1465258467, guid: d0b0558fe361d5d45a60ba6da31d48c4, type: 3}
     - target: {fileID: 1537375780532801556, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.97
+      value: 40.5
       objectReference: {fileID: 0}
     - target: {fileID: 1537375780532801556, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.86
+      value: 5.67
       objectReference: {fileID: 0}
     - target: {fileID: 1537375780532801556, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -56,13 +60,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnnemySlub
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7252643826738384561, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
+      propertyPath: m_Size.x
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7252643826738384561, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
+      propertyPath: m_Size.y
+      value: 0.58
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: -8276503954121859479, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5624425381685581031, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1252276431703978367}
+    - targetCorrespondingSourceObject: {fileID: 5624425381685581031, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6864683510186082152}
   m_SourcePrefab: {fileID: 100100000, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
 --- !u!1 &712395724842572603 stripped
 GameObject:
@@ -82,4 +98,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 12
-  areaWidth: 5
+  areaWidth: 20
+--- !u!95 &6864683510186082152
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712395724842572603}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 948ff599acbcbd14c9172f04f5d69274, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
