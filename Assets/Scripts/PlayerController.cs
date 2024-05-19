@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField][Range(0f, 1f)] float gravityAugmentOnDown = .25f;
     [SerializeField] int defaultHealth = 3;
     [SerializeField][Range(0f, 3f)] float invincibilityDuration = 1f;
+    [SerializeField] PlayerPunch playerPunch;
 
     // Player inputs
     float movement = 0f;
@@ -41,6 +42,8 @@ public class PlayerController : MonoBehaviour
     bool isSunbathAvailable = false;
     Platform platform = null;
     int maxHealth = 1;
+    Vector3 respawnLocation = Vector3.zero;
+    bool isPunchUnlocked = false;
 
     private bool isPushingWall => isPushingWallRight || isPushingWallLeft;
 
@@ -50,6 +53,7 @@ public class PlayerController : MonoBehaviour
         initialGravityScale = rb.gravityScale;
         maxHealth = defaultHealth;
         health = defaultHealth;
+        respawnLocation = transform.position;
     }
 
     void FixedUpdate()
@@ -57,6 +61,9 @@ public class PlayerController : MonoBehaviour
         UpdateVelocity(Time.fixedDeltaTime);
         UpdateGravity();
         UpdateActions();
+
+        if (punch && playerPunch != null && isPunchUnlocked)
+            Punch();
 
         invincibilityCooldown = Mathf.Max(invincibilityCooldown - Time.fixedDeltaTime, 0f);
         if (rb.velocity.magnitude != 0f)
@@ -121,6 +128,7 @@ public class PlayerController : MonoBehaviour
     private void TakeSunbath()
     {
         health = maxHealth;
+        respawnLocation = transform.position;
     }
 
     private void GoDown()
@@ -130,6 +138,18 @@ public class PlayerController : MonoBehaviour
             platform.SetEnabledPlatform(false);
             platform = null;
         }
+    }
+
+    private void Respawn()
+    {
+        transform.position = respawnLocation;
+        health = maxHealth;
+    }
+
+    private void Punch()
+    {
+        if (punch && playerPunch != null && isPunchUnlocked)
+            playerPunch.Punch();
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -192,6 +212,8 @@ public class PlayerController : MonoBehaviour
         if (invincibilityCooldown > 0f)
             return;
         health -= 1;
+        if (health <= 0)
+            Respawn();
         Debug.Log("lifes: " + health);
         invincibilityCooldown = invincibilityDuration;
         Vector2 knockbackDirection = transform.position - damageSourcePosition;
@@ -214,5 +236,10 @@ public class PlayerController : MonoBehaviour
     public void PowerUp()
     {
         maxHealth += 1;
+    }
+
+    public void UnlockPunch()
+    {
+        isPunchUnlocked = true;
     }
 }

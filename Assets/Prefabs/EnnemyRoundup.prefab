@@ -176,7 +176,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2798679669125278031, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
       propertyPath: defaultHealth
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3007931062075184782, guid: e62a2387bed8588449bac8c49230cc3f, type: 3}
       propertyPath: m_Materials.Array.data[0]
