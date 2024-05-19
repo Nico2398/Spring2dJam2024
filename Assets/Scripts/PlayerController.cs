@@ -144,6 +144,8 @@ public class PlayerController : MonoBehaviour
     {
         transform.position = respawnLocation;
         health = maxHealth;
+        foreach (EnnemyHealth ennemy in FindObjectsOfType< EnnemyHealth>(true))
+            ennemy.Init();
     }
 
     private void Punch()
