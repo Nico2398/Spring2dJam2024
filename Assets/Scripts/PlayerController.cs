@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -23,6 +24,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField][Range(0f, 3f)] float invincibilityDuration = 1f;
     [SerializeField] PlayerPunch playerPunch;
     [SerializeField] Animator animator;
+    [SerializeField] List<GameObject> UiHealthImages;
+    [SerializeField] List<GameObject> UiMaxHealthImages;
 
     // Player inputs
     float movement = 0f;
@@ -58,6 +61,7 @@ public class PlayerController : MonoBehaviour
         health = defaultHealth;
         respawnLocation = transform.position;
         initalScale = transform.localScale;
+        UpdateUI();
     }
 
     private void Update()
@@ -146,6 +150,7 @@ public class PlayerController : MonoBehaviour
     {
         health = maxHealth;
         respawnLocation = transform.position;
+        UpdateUI();
     }
 
     private void GoDown()
@@ -163,12 +168,26 @@ public class PlayerController : MonoBehaviour
         health = maxHealth;
         foreach (EnnemyHealth ennemy in FindObjectsOfType< EnnemyHealth>(true))
             ennemy.Init();
+        UpdateUI();
     }
 
     private void Punch()
     {
         if (punch && playerPunch != null && isPunchUnlocked)
             playerPunch.Punch();
+    }
+
+    private void UpdateUI()
+    {
+        for (int i = 0; i < UiHealthImages.Count; i++)
+        {
+            UiHealthImages[i].SetActive(i < health);
+        }
+
+        for (int i = 0; i < UiMaxHealthImages.Count; i++)
+        {
+            UiMaxHealthImages[i].SetActive(i < maxHealth);
+        }
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -232,13 +251,17 @@ public class PlayerController : MonoBehaviour
             return;
         health -= 1;
         if (health <= 0)
+        {
             Respawn();
+            return;
+        }
         Debug.Log("lifes: " + health);
         invincibilityCooldown = invincibilityDuration;
         Vector2 knockbackDirection = transform.position - damageSourcePosition;
         Vector2 knockback = knockbackDirection.normalized * knockbackVelocity * knockbackFactor;
         knockback.y = Mathf.Min(knockbackMaximumVerticalVelocity, knockback.y);
         rb.velocity = knockback;
+        UpdateUI();
     }
 
     public void SetSunbathAvailable(bool isAvailable)
@@ -255,6 +278,7 @@ public class PlayerController : MonoBehaviour
     public void PowerUp()
     {
         maxHealth += 1;
+        UpdateUI();
     }
 
     public void UnlockPunch()
